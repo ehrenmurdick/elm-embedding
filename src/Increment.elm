@@ -1,12 +1,11 @@
 module Increment exposing (..)
 
-import Browser
 import Html exposing (Html, button, div, text)
 import Html.Events exposing (onClick)
 
 
-main =
-    Browser.sandbox { init = init, update = update, view = view }
+type alias Flags =
+    {}
 
 
 type alias Model =
@@ -37,6 +36,6 @@ view : Model -> Html Msg
 view model =
     div []
         [ button [ onClick Decrement ] [ text "-" ]
-        , div [] [ text (String.fromInt model.num) ]
+        , div [] [ text (toString model.num) ]
         , button [ onClick Increment ] [ text "+" ]
         ]
