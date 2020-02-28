@@ -1,7 +1,11 @@
 module Main exposing (..)
 
-import Html exposing (Html, button, div, text)
-import Html.Events exposing (onClick)
+import Html exposing (..)
+import Html.Attributes exposing (..)
+import Html.Events exposing (..)
+import Input exposing (inputField)
+import Ports
+import Time
 
 
 main : Program Flags Model Msg
@@ -15,38 +19,58 @@ main =
 
 
 type alias Model =
-    { greeting : String }
+    { name : String
+    , email : String
+    }
 
 
 type alias Flags =
-    {}
+    { name : String
+    , email : String
+    }
 
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( { greeting = "" }, Cmd.none )
+    ( { name = flags.name
+      , email = flags.email
+      }
+    , Cmd.none
+    )
 
 
 type Msg
-    = Greet String
+    = Greet
+    | SetName String
+    | SetEmail String
+    | Tick Time.Time
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Greet s ->
-            ( { model | greeting = s }, Cmd.none )
+        Greet ->
+            ( model, Ports.log "Greet" )
+
+        SetName s ->
+            ( { model | name = s }, Cmd.none )
+
+        SetEmail s ->
+            ( { model | email = s }, Cmd.none )
+
+        Tick t ->
+            ( model, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
 subscriptions m =
-    Sub.none
+    Time.every 1000 Tick
 
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ button [ onClick (Greet "hi") ] [ text "hi" ]
-        , text model.greeting
-        , button [ onClick (Greet "hello") ] [ text "hello" ]
+    div [ class "container" ]
+        [ inputField "name" SetName model.name
+        , inputField "email" SetEmail model.email
+        , button [ onClick Greet ] [ text "greet" ]
         ]
