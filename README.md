@@ -15,15 +15,15 @@ uses subscriptions, ports and commands.
 ### How does all this work exactly?
 
 Essentially, Elm does not provide provisions for embedding one app in another,
-becuase it doesn't need to. The only issue that arrisese when you attempt to do
+becuase it doesn't need to. The only issue that arrises when you attempt to do
 this in a naive way, is that you get type errors where the parent app would
 expect, say `Cmd Msg` but the child app returns `Cmd Child.Msg`.
 
 So the only thing we need to do to make the naive approach work is somehow
 coerce the child app's Cmd Msg to be the same type as the parent's. 
 
-Along comes the `map` function, in this case for `Cmd` (it's the same for every
-Sub and Html):
+Along comes the `map` function, in this case for `Cmd` (it's the same for
+`Sub` and `Html`):
 
 ```elm
 map : (a -> b) -> Cmd a -> Cmd b
@@ -44,21 +44,22 @@ the first argument to `map`, and there you have it!
 
 ### Further reading
 
-In more abstract languages like Haskell (in fact the language that the Elm
-compiler is written in) the thing that `Cmd`, `Sub` and `Html` all have in
-common is that they have a function called `map`, which would qualify them as
-"functors", which just means they are things that can be mapped over. `List` in
-Elm is also a functor.
+In more abstract languages like Haskell (the language that the Elm compiler is
+written in) the thing that `Cmd`, `Sub` and `Html` all have in common is that
+they have a function called `map`, which would qualify them as "functors".
+This just means they are things that can be mapped over. `List` in Elm is also
+a functor.
 
-In order to be a true functor, they must also follow two rules:
+In order to be a true functor in the mathematical sense, they must also follow
+two rules:
 
 - Map must preserve identity
     ```
     id : a -> a
     id a = a
+
+    map id functor == id functor
     ```
-    and
-    `map id functor == id functor`
     - This means that the map function cannot have side effects. Calling map on
       a functor should not change its structure in any way, or modify any other
       properties of the collection besides it's contents.
